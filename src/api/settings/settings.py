@@ -13,30 +13,27 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 import os
 
 import yaml  # PyYAML
+from settings.settings_local import *
 
 CYCLOS_CONSTANTS = None
-with open("/cyclos/cyclos_constants.yml", 'r') as cyclos_stream:
+with open(CYCLOS_CONSTANT_FILE, 'r') as cyclos_stream:
     try:
         CYCLOS_CONSTANTS = yaml.full_load(cyclos_stream)
     except yaml.YAMLError as exc:
         assert False, exc
 
 DOLIBARR_CONSTANTS = None
-with open("/dolibarr/dolibarr_constants.yml", 'r') as dolibarr_stream:
+with open(DOLIBARR_CONSTANT_FILE, 'r') as dolibarr_stream:
     try:
         DOLIBARR_CONSTANTS = yaml.full_load(dolibarr_stream)
     except yaml.YAMLError as exc:
         assert False, exc
-
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'kci-=2)4_qh#a3+k#xt!0)_t838t9zjcjpl#&09(&2&kftskr('
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # You need to explicitly set DJANGO_DEBUG=True in docker-compose.yml (or environment variable) to have DEBUG on
@@ -118,7 +115,6 @@ WSGI_APPLICATION = 'wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
-DATABASE_NAME = os.getenv('DATABASE_NAME', False)
 if not DATABASE_NAME:
     DATABASES = {
         'default': {
@@ -131,9 +127,9 @@ else:
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': DATABASE_NAME,
-            'USER': os.environ.get('DATABASE_USER'),
-            'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
-            'HOST': os.environ.get('DATABASE_HOST'),
+            'USER': DATABASE_USER,
+            'PASSWORD': DATABASE_PASSWORD,
+            'HOST': DATABASE_HOST,
             'PORT': '5432',
         }
     }
@@ -201,16 +197,9 @@ if EMAIL_HOST:
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# Public URLs
-API_PUBLIC_URL = os.environ.get('API_PUBLIC_URL')
-DOLIBARR_PUBLIC_URL = os.environ.get('DOLIBARR_PUBLIC_URL')
-BDC_PUBLIC_URL = os.environ.get('BDC_PUBLIC_URL')
-GI_PUBLIC_URL = os.environ.get('GI_PUBLIC_URL')
-CEL_PUBLIC_URL = os.environ.get('CEL_PUBLIC_URL')
-
 # APIs URLs
-DOLIBARR_URL = 'http://dolibarr-app/api/index.php'
-CYCLOS_URL = 'http://cyclos-app:8080/eusko/web-rpc'
+DOLIBARR_URL = DOLIBARR_PUBLIC_URL + 'api/index.php'
+CYCLOS_URL = CYCLOS_PUBLIC_URL + NETWORK_NAME + '/web-rpc'
 
 # Euskal Moneta internal settings
 DATE_COTISATION_ANTICIPEE = '01/11'  # 1er Novembre
