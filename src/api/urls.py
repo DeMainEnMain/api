@@ -19,14 +19,14 @@ import gestioninterne.credits_comptes_prelevements_auto as credits_views
 
 
 router = routers.SimpleRouter()
-router.register(r'bdc', BDCAPIView, base_name='bdc')
-router.register(r'members', MembersAPIView, base_name='members')
-router.register(r'members-subscriptions', MembersSubscriptionsAPIView, base_name='members-subscriptions')
-router.register(r'beneficiaires', BeneficiaireViewSet, base_name='beneficiaires')
-router.register(r'mandats', MandatViewSet, base_name='mandats')
+router.register(r'bdc', BDCAPIView, basename='bdc')
+router.register(r'members', MembersAPIView, basename='members')
+router.register(r'members-subscriptions', MembersSubscriptionsAPIView, basename='members-subscriptions')
+router.register(r'beneficiaires', BeneficiaireViewSet, basename='beneficiaires')
+router.register(r'mandats', MandatViewSet, basename='mandats')
 router.register(r'predefined-security-questions', PredefinedSecurityQuestionViewSet,
-                base_name='predefined-security-questions')
-router.register(r'securityqa', SecurityQAViewSet, base_name='securityqa')
+                basename='predefined-security-questions')
+router.register(r'securityqa', SecurityQAViewSet, basename='securityqa')
 
 urlpatterns = [
     # Auth token
