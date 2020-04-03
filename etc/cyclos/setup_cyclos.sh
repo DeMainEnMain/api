@@ -8,7 +8,7 @@ cd /cyclos
 
 PASS=`echo -n admin:admin | base64`
 
-until [ `curl --silent --write-out '%{response_code}' -o /dev/null http://cyclos-app:8080/global/` -eq 200 ];
+until [ `curl --silent --write-out '%{response_code}' -o /dev/null http://sauvagnon.acacs.org:8080/cyclos/global/` -eq 200 ];
 do
   echo '--- waiting for Cyclos to be fully up (10 seconds)'
   sleep 10
