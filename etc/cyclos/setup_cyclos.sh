@@ -2,24 +2,24 @@
 set -x
 set -e
 
-WORKDIR=$(pwd)
+LOGIN_PASS="demainenmain:Tinda"
+CYCLOS_URL="http://sauvagnon.acacs.org:8080/cyclos"
 
-cd /cyclos
 
-PASS=`echo -n admin:admin | base64`
+PASS=`echo -n $LOGIN_PASS | base64`
 
-until [ `curl --silent --write-out '%{response_code}' -o /dev/null http://sauvagnon.acacs.org:8080/cyclos/global/` -eq 200 ];
+until [ `curl --silent --write-out '%{response_code}' -o /dev/null $CYCLOS_URL/global/` -eq 200 ];
 do
   echo '--- waiting for Cyclos to be fully up (10 seconds)'
   sleep 10
 done
 
 if [ ! -f ./cyclos_constants.yml ]; then
-    python setup.py http://cyclos-app:8080/ $PASS
-    python init_test_data.py http://cyclos-app:8080/ $PASS
+    python3 setup.py --debug $CYCLOS_URL $PASS
+    python3 init_test_data.py --debug $CYCLOS_URL $PASS
+else
+	echo "File present"
 fi
-
-cd ${WORKDIR}
 
 exec "$@"
 

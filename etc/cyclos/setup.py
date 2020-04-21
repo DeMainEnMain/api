@@ -555,6 +555,7 @@ def create_transaction_custom_field_text(name, unique=False,
                           'type': 'STRING',
                           'size': 'LARGE',
                           'control': 'TEXT',
+                          'valueMatch': 'TEXT',
                           'unique': unique,
                           'required': required
                       })
@@ -574,6 +575,7 @@ def create_transaction_custom_field_decimal(name, required=True):
                           'internalName': get_internal_name(name),
                           'type': 'DECIMAL',
                           'control': 'TEXT',
+                          'decimalDigits': 2,
                           'required': required
                       })
     check_request_status(r)
@@ -621,10 +623,12 @@ ID_CHAMP_PERSO_PAIEMENT_PRODUIT = create_transaction_custom_field_single_selecti
         'Foulard',
     ],
 )
+
 ID_CHAMP_PERSO_PAIEMENT_NUMERO_BORDEREAU = create_transaction_custom_field_text(
     name='Numéro de bordereau',
     required=False,
 )
+
 ID_CHAMP_PERSO_PAIEMENT_MONTANT_COTISATIONS = create_transaction_custom_field_decimal(
     name='Montant Cotisations',
 )
@@ -948,6 +952,7 @@ def create_payment_transfer_type(name, direction, from_account_type_id,
                           'maxChargebackTime': {'amount': '2', 'field': 'MONTHS'},
                           'channels': channels,
                           'principalTypes': principal_types,
+                          'descriptionAvailability': "OPTIONAL",
                       })
     check_request_status(r)
     payment_transfer_type_id = r.json()['result']
@@ -973,6 +978,7 @@ def create_generated_transfer_type(name, direction, from_account_type_id,
                           'direction': direction,
                           'from': from_account_type_id,
                           'to': to_account_type_id,
+                          'descriptionAvailability': "OPTIONAL",
                       })
     check_request_status(r)
     generated_transfer_type_id = r.json()['result']
