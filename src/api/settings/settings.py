@@ -15,14 +15,14 @@ import os
 import yaml  # PyYAML
 
 CYCLOS_CONSTANTS = None
-with open("/cyclos/cyclos_constants.yml", 'r') as cyclos_stream:
+with open("/home/matthieu/api/etc/cyclos/cyclos_constants.yml", 'r') as cyclos_stream:
     try:
         CYCLOS_CONSTANTS = yaml.full_load(cyclos_stream)
     except yaml.YAMLError as exc:
         assert False, exc
 
 DOLIBARR_CONSTANTS = None
-with open("/dolibarr/dolibarr_constants.yml", 'r') as dolibarr_stream:
+with open("/home/matthieu/api/etc/dolibarr/dolibarr_constants.yml", 'r') as dolibarr_stream:
     try:
         DOLIBARR_CONSTANTS = yaml.full_load(dolibarr_stream)
     except yaml.YAMLError as exc:
