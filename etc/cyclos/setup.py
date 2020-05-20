@@ -632,9 +632,6 @@ ID_CHAMP_PERSO_PAIEMENT_NUMERO_BORDEREAU = create_transaction_custom_field_text(
 ID_CHAMP_PERSO_PAIEMENT_MONTANT_COTISATIONS = create_transaction_custom_field_decimal(
     name='Montant Cotisations',
 )
-ID_CHAMP_PERSO_PAIEMENT_MONTANT_VENTES = create_transaction_custom_field_decimal(
-    name='Montant Ventes',
-)
 ID_CHAMP_PERSO_PAIEMENT_MONTANT_CHANGES_BILLET = create_transaction_custom_field_decimal(
     name='Montant Changes billet',
 )
@@ -658,7 +655,6 @@ all_transaction_fields = [
     ID_CHAMP_PERSO_PAIEMENT_PRODUIT,
     ID_CHAMP_PERSO_PAIEMENT_NUMERO_BORDEREAU,
     ID_CHAMP_PERSO_PAIEMENT_MONTANT_COTISATIONS,
-    ID_CHAMP_PERSO_PAIEMENT_MONTANT_VENTES,
     ID_CHAMP_PERSO_PAIEMENT_MONTANT_CHANGES_BILLET,
     ID_CHAMP_PERSO_PAIEMENT_MONTANT_CHANGES_NUMERIQUE,
     ID_CHAMP_PERSO_PAIEMENT_NUMERO_TRANSACTION_BANQUE,
@@ -1218,37 +1214,6 @@ ID_TYPE_PAIEMENT_COTISATION_EN_EUSKO = create_payment_transfer_type(
         ID_STATUS_A_REMETTRE,
     ],
 )
-ID_TYPE_PAIEMENT_VENTE_EN_EURO = create_payment_transfer_type(
-    name='Vente en €',
-    direction='SYSTEM_TO_USER',
-    from_account_type_id=ID_COMPTE_DE_DEBIT_EURO,
-    to_account_type_id=ID_CAISSE_EURO_BDC,
-    custom_fields=[
-        ID_CHAMP_PERSO_PAIEMENT_PRODUIT,
-        ID_CHAMP_PERSO_PAIEMENT_MODE_DE_PAIEMENT,
-    ],
-    status_flows=[
-        ID_STATUS_FLOW_REMISE_A_EM,
-    ],
-    initial_statuses=[
-        ID_STATUS_A_REMETTRE,
-    ],
-)
-ID_TYPE_PAIEMENT_VENTE_EN_EUSKO = create_payment_transfer_type(
-    name='Vente en eusko',
-    direction='SYSTEM_TO_USER',
-    from_account_type_id=ID_COMPTE_DES_BILLETS_EN_CIRCULATION,
-    to_account_type_id=ID_CAISSE_EUSKO_BDC,
-    custom_fields=[
-        ID_CHAMP_PERSO_PAIEMENT_PRODUIT,
-    ],
-    status_flows=[
-        ID_STATUS_FLOW_REMISE_A_EM,
-    ],
-    initial_statuses=[
-        ID_STATUS_A_REMETTRE,
-    ],
-)
 
 # Dépôt en banque :
 # 1 type de paiement pour le dépôt proprement dit + 4 types de paiements
@@ -1265,7 +1230,6 @@ ID_TYPE_PAIEMENT_DEPOT_EN_BANQUE = create_payment_transfer_type(
         ID_CHAMP_PERSO_PAIEMENT_MODE_DE_PAIEMENT,
         ID_CHAMP_PERSO_PAIEMENT_NUMERO_BORDEREAU,
         ID_CHAMP_PERSO_PAIEMENT_MONTANT_COTISATIONS,
-        ID_CHAMP_PERSO_PAIEMENT_MONTANT_VENTES,
         ID_CHAMP_PERSO_PAIEMENT_MONTANT_CHANGES_BILLET,
         ID_CHAMP_PERSO_PAIEMENT_MONTANT_CHANGES_NUMERIQUE,
     ],
@@ -1610,8 +1574,6 @@ all_system_to_user_payments = [
     ID_TYPE_PAIEMENT_RECONVERSION_BILLETS,
     ID_TYPE_PAIEMENT_COTISATION_EN_EURO,
     ID_TYPE_PAIEMENT_COTISATION_EN_EUSKO,
-    ID_TYPE_PAIEMENT_VENTE_EN_EURO,
-    ID_TYPE_PAIEMENT_VENTE_EN_EUSKO,
     ID_TYPE_PAIEMENT_REGUL_DEPOT_INSUFFISANT,
     ID_TYPE_PAIEMENT_CHANGE_NUMERIQUE_EN_LIGNE_VERSEMENT_DES_EUROS,
     ID_TYPE_PAIEMENT_CHANGE_NUMERIQUE_EN_LIGNE_VERSEMENT_DES_EUSKO,
@@ -2301,8 +2263,6 @@ set_admin_group_permissions(
         ID_TYPE_PAIEMENT_RECONVERSION_BILLETS,
         ID_TYPE_PAIEMENT_COTISATION_EN_EURO,
         ID_TYPE_PAIEMENT_COTISATION_EN_EUSKO,
-        ID_TYPE_PAIEMENT_VENTE_EN_EURO,
-        ID_TYPE_PAIEMENT_VENTE_EN_EUSKO,
         ID_TYPE_PAIEMENT_REGUL_DEPOT_INSUFFISANT,
         ID_TYPE_PAIEMENT_CHANGE_NUMERIQUE_EN_BDC,
         ID_TYPE_PAIEMENT_DEPOT_DE_BILLETS,
