@@ -522,11 +522,6 @@ def bank_deposit(request):
     except KeyError:
         montant_cotisations = float()
 
-    try:
-        montant_ventes = payments_data[str(settings.CYCLOS_CONSTANTS['payment_types']['vente_en_euro'])]
-    except KeyError:
-        montant_ventes = float()
-
     # Enregistrer le dépôt en banque sur le compte approprié
     try:
         bordereau = request.data['bordereau']
@@ -551,10 +546,6 @@ def bank_deposit(request):
             {
                 'field': str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['montant_cotisations']),
                 'decimalValue': montant_cotisations  # calculé
-            },
-            {
-                'field': str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['montant_ventes']),
-                'decimalValue': montant_ventes  # calculé
             },
             {
                 'field': str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['montant_changes_billet']),
