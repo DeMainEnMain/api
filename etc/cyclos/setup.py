@@ -2162,13 +2162,6 @@ ID_PRODUIT_UTILISATEURS_BASIQUES_SANS_COMPTE = create_member_product(
         'login',
     ],
 )
-# Porteurs.
-ID_GROUPE_PORTEURS = create_member_group(
-    name='Porteurs',
-    products=[
-        ID_PRODUIT_UTILISATEURS_BASIQUES_SANS_COMPTE,
-    ]
-)
 # Adhérents sans compte.
 ID_GROUPE_ADHERENTS_SANS_COMPTE = create_member_group(
     name='Adhérents sans compte',
@@ -2184,7 +2177,6 @@ all_user_groups = [
     ID_GROUPE_COMPTES_DEDIES,
     ID_GROUPE_ADHERENTS_PRESTATAIRES,
     ID_GROUPE_ADHERENTS_UTILISATEURS,
-    ID_GROUPE_PORTEURS,
     ID_GROUPE_ADHERENTS_SANS_COMPTE,
 ]
 
