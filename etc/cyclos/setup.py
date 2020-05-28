@@ -595,7 +595,7 @@ def add_custom_field_to_transfer_type(transfer_type_id, custom_field_id):
 ID_CHAMP_PERSO_PAIEMENT_BDC = create_transaction_custom_field_linked_user(
     name='BDC',
 )
-ID_CHAMP_PERSO_PAIEMENT_PORTEUR = create_transaction_custom_field_linked_user(
+ID_CHAMP_PERSO_PAIEMENT_PORTEUR = create_transaction_custom_field_text(
     name='Porteur',
 )
 ID_CHAMP_PERSO_PAIEMENT_ADHERENT = create_transaction_custom_field_linked_user(
