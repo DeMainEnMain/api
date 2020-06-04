@@ -715,7 +715,7 @@ def cash_deposit(request):
         cash_deposit_data.update({'customValues': [
             {
                 'field': str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['porteur']),
-                'linkedEntityValue': porteur  # ID du porteur
+                'stringValue': porteur  # ID du porteur
             },
         ]})
 
