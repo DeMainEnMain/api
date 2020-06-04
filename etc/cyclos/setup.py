@@ -598,10 +598,10 @@ ID_CHAMP_PERSO_PAIEMENT_BDC = create_transaction_custom_field_linked_user(
 ID_CHAMP_PERSO_PAIEMENT_PORTEUR = create_transaction_custom_field_text(
     name='Porteur',
 )
-ID_CHAMP_PERSO_PAIEMENT_ADHERENT = create_transaction_custom_field_linked_user(
+ID_CHAMP_PERSO_PAIEMENT_ADHERENT = create_transaction_custom_field_text(
     name='Adhérent',
 )
-ID_CHAMP_PERSO_PAIEMENT_ADHERENT_FACULTATIF = create_transaction_custom_field_linked_user(
+ID_CHAMP_PERSO_PAIEMENT_ADHERENT_FACULTATIF = create_transaction_custom_field_text(
     name='Adhérent (facultatif)',
     required=False,
 )
@@ -2142,34 +2142,12 @@ ID_PRODUIT_ADHERENTS_UTILISATEURS = create_member_product(
 assign_product_to_group(ID_PRODUIT_ADHERENTS_UTILISATEURS,
                         ID_GROUPE_ADHERENTS_UTILISATEURS)
 
-# Produit pour tous les groupes d'utilisateurs qui n'auront pas de
-# compte.
-ID_PRODUIT_UTILISATEURS_BASIQUES_SANS_COMPTE = create_member_product(
-    name='Utilisateurs basiques sans compte',
-    my_profile_fields=[
-        'FULL_NAME',
-        'LOGIN_NAME',
-    ],
-    password_actions=[
-        'login',
-    ],
-)
-# Adhérents sans compte.
-ID_GROUPE_ADHERENTS_SANS_COMPTE = create_member_group(
-    name='Adhérents sans compte',
-    initial_user_status='DISABLED',
-    products=[
-        ID_PRODUIT_UTILISATEURS_BASIQUES_SANS_COMPTE,
-    ]
-)
-
 all_user_groups = [
     ID_GROUPE_BUREAUX_DE_CHANGE,
     ID_GROUPE_BANQUES_DE_DEPOT,
     ID_GROUPE_COMPTES_DEDIES,
     ID_GROUPE_ADHERENTS_PRESTATAIRES,
     ID_GROUPE_ADHERENTS_UTILISATEURS,
-    ID_GROUPE_ADHERENTS_SANS_COMPTE,
 ]
 
 # Définition des permissions.
@@ -2311,7 +2289,6 @@ set_admin_group_permissions(
     accessible_user_groups=[
         ID_GROUPE_ADHERENTS_PRESTATAIRES,
         ID_GROUPE_ADHERENTS_UTILISATEURS,
-        ID_GROUPE_ADHERENTS_SANS_COMPTE,
         ID_GROUPE_COMPTES_DEDIES,
     ],
     user_profile_fields=[
