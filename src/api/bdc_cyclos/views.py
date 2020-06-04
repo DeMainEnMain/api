@@ -280,11 +280,11 @@ def change_euro_eusko(request):
         cyclos = CyclosAPI(token=request.user.profile.cyclos_token, mode='bdc')
     except CyclosAPIException:
         return Response({'error': 'Unable to connect to Cyclos!'}, status=status.HTTP_400_BAD_REQUEST)
+#    member_cyclos_id = cyclos.get_member_id_from_login(request.data['member_login'])
 
     serializer = serializers.ChangeEuroEuskoSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)  # log.critical(serializer.errors)
 
-    member_cyclos_id = cyclos.get_member_id_from_login(request.data['member_login'])
 
     try:
         dolibarr = DolibarrAPI(api_key=request.user.profile.dolibarr_token)
@@ -309,8 +309,9 @@ def change_euro_eusko(request):
         'to': cyclos.user_bdc_id,  # ID de l'utilisateur Bureau de change
         'customValues': [
             {
-                'field': str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['adherent']),
-                'linkedEntityValue': member_cyclos_id  # ID de l'adhérent
+                'field':
+                str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['adherent_txt']),
+                'stringValue': member_name  # nom de l'adhérent
             },
             {
                 'field': str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['mode_de_paiement']),
@@ -351,8 +352,6 @@ def reconversion(request):
         return Response({'error': 'Forbidden, reconversion is not available for non-business members!'},
                         status=status.HTTP_403_FORBIDDEN)
 
-    member_cyclos_id = cyclos.get_member_id_from_login(request.data['member_login'])
-
     # payment/perform
     query_data = {
         'type': str(settings.CYCLOS_CONSTANTS['payment_types']['reconversion_billets_versement_des_eusko']),
@@ -362,8 +361,8 @@ def reconversion(request):
         'to': cyclos.user_bdc_id,  # ID de l'utilisateur Bureau de change
         'customValues': [
             {
-                'field': str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['adherent']),
-                'linkedEntityValue': member_cyclos_id  # ID de l'adhérent
+                'field': str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['adherent_txt']),
+                'stringValue': dolibarr_member['company']  # ID de l'adhérent
             },
             {
                 'field': str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['numero_de_facture']),
@@ -763,11 +762,12 @@ def sortie_retour_eusko(request):
 
     for payment in request.data['selected_payments']:
         try:
-            adherent_id = [
-                value['linkedEntityValue']['id']
+            adherent_name = [
+                value['stringValue']
                 for value in payment['customValues']
-                if value['field']['id'] == str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['adherent']) and
-                value['field']['internalName'] == 'adherent'
+                if value['field']['id'] ==
+                str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['adherent_txt']) and
+                value['field']['internalName'] == 'adherent_txt'
             ][0]
         except (KeyError, IndexError):
             return Response({'error': 'Unable to get adherent_id from one of your selected_payments!'},
@@ -782,8 +782,9 @@ def sortie_retour_eusko(request):
             'to': 'SYSTEM',  # System account
             'customValues': [
                 {
-                    'field': str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['adherent']),
-                    'linkedEntityValue': adherent_id,  # ID de l'adhérent
+                    'field':
+                    str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['adherent_txt']),
+                    'stringValue': adherent_name,  # nom de l'adhérent
                 },
                 {
                     'field': str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['porteur']),

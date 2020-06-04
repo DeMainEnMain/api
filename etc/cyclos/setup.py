@@ -598,10 +598,13 @@ ID_CHAMP_PERSO_PAIEMENT_BDC = create_transaction_custom_field_linked_user(
 ID_CHAMP_PERSO_PAIEMENT_PORTEUR = create_transaction_custom_field_text(
     name='Porteur',
 )
+ID_CHAMP_PERSO_PAIEMENT_ADHERENT_TXT = create_transaction_custom_field_text(
+    name='Adhérent_txt',
+)
 ID_CHAMP_PERSO_PAIEMENT_ADHERENT = create_transaction_custom_field_linked_user(
     name='Adhérent',
 )
-ID_CHAMP_PERSO_PAIEMENT_ADHERENT_FACULTATIF = create_transaction_custom_field_linked_user(
+ID_CHAMP_PERSO_PAIEMENT_ADHERENT_FACULTATIF = create_transaction_custom_field_text(
     name='Adhérent (facultatif)',
     required=False,
 )
@@ -650,6 +653,7 @@ all_transaction_fields = [
     ID_CHAMP_PERSO_PAIEMENT_BDC,
     ID_CHAMP_PERSO_PAIEMENT_PORTEUR,
     ID_CHAMP_PERSO_PAIEMENT_ADHERENT,
+    ID_CHAMP_PERSO_PAIEMENT_ADHERENT_TXT,
     ID_CHAMP_PERSO_PAIEMENT_ADHERENT_FACULTATIF,
     ID_CHAMP_PERSO_PAIEMENT_MODE_DE_PAIEMENT,
     ID_CHAMP_PERSO_PAIEMENT_PRODUIT,
@@ -1096,7 +1100,7 @@ ID_TYPE_PAIEMENT_SORTIE_RETOURS_EUSKO_BDC = create_payment_transfer_type(
     to_account_type_id=ID_COMPTE_DE_TRANSIT,
     custom_fields=[
         ID_CHAMP_PERSO_PAIEMENT_PORTEUR,
-        ID_CHAMP_PERSO_PAIEMENT_ADHERENT,
+        ID_CHAMP_PERSO_PAIEMENT_ADHERENT_TXT,
     ],
     status_flows=[
         ID_STATUS_FLOW_RAPPROCHEMENT,
@@ -1138,7 +1142,7 @@ ID_TYPE_PAIEMENT_CHANGE_BILLETS_VERSEMENT_DES_EUROS = create_payment_transfer_ty
     from_account_type_id=ID_COMPTE_DE_DEBIT_EURO,
     to_account_type_id=ID_CAISSE_EURO_BDC,
     custom_fields=[
-        ID_CHAMP_PERSO_PAIEMENT_ADHERENT,
+        ID_CHAMP_PERSO_PAIEMENT_ADHERENT_TXT,
         ID_CHAMP_PERSO_PAIEMENT_MODE_DE_PAIEMENT,
     ],
     status_flows=[
@@ -1171,7 +1175,7 @@ ID_TYPE_PAIEMENT_RECONVERSION_BILLETS = create_payment_transfer_type(
     from_account_type_id=ID_COMPTE_DES_BILLETS_EN_CIRCULATION,
     to_account_type_id=ID_RETOURS_EUSKO_BDC,
     custom_fields=[
-        ID_CHAMP_PERSO_PAIEMENT_ADHERENT,
+        ID_CHAMP_PERSO_PAIEMENT_ADHERENT_TXT,
         ID_CHAMP_PERSO_PAIEMENT_NUMERO_FACTURE,
     ],
     status_flows=[
@@ -1189,7 +1193,7 @@ ID_TYPE_PAIEMENT_COTISATION_EN_EURO = create_payment_transfer_type(
     from_account_type_id=ID_COMPTE_DE_DEBIT_EURO,
     to_account_type_id=ID_CAISSE_EURO_BDC,
     custom_fields=[
-        ID_CHAMP_PERSO_PAIEMENT_ADHERENT,
+        ID_CHAMP_PERSO_PAIEMENT_ADHERENT_TXT,
         ID_CHAMP_PERSO_PAIEMENT_MODE_DE_PAIEMENT,
     ],
     status_flows=[
@@ -1205,7 +1209,7 @@ ID_TYPE_PAIEMENT_COTISATION_EN_EUSKO = create_payment_transfer_type(
     from_account_type_id=ID_COMPTE_DES_BILLETS_EN_CIRCULATION,
     to_account_type_id=ID_CAISSE_EUSKO_BDC,
     custom_fields=[
-        ID_CHAMP_PERSO_PAIEMENT_ADHERENT,
+        ID_CHAMP_PERSO_PAIEMENT_ADHERENT_TXT,
     ],
     status_flows=[
         ID_STATUS_FLOW_REMISE_A_EM,
@@ -2150,34 +2154,12 @@ ID_PRODUIT_ADHERENTS_UTILISATEURS = create_member_product(
 assign_product_to_group(ID_PRODUIT_ADHERENTS_UTILISATEURS,
                         ID_GROUPE_ADHERENTS_UTILISATEURS)
 
-# Produit pour tous les groupes d'utilisateurs qui n'auront pas de
-# compte.
-ID_PRODUIT_UTILISATEURS_BASIQUES_SANS_COMPTE = create_member_product(
-    name='Utilisateurs basiques sans compte',
-    my_profile_fields=[
-        'FULL_NAME',
-        'LOGIN_NAME',
-    ],
-    password_actions=[
-        'login',
-    ],
-)
-# Adhérents sans compte.
-ID_GROUPE_ADHERENTS_SANS_COMPTE = create_member_group(
-    name='Adhérents sans compte',
-    initial_user_status='DISABLED',
-    products=[
-        ID_PRODUIT_UTILISATEURS_BASIQUES_SANS_COMPTE,
-    ]
-)
-
 all_user_groups = [
     ID_GROUPE_BUREAUX_DE_CHANGE,
     ID_GROUPE_BANQUES_DE_DEPOT,
     ID_GROUPE_COMPTES_DEDIES,
     ID_GROUPE_ADHERENTS_PRESTATAIRES,
     ID_GROUPE_ADHERENTS_UTILISATEURS,
-    ID_GROUPE_ADHERENTS_SANS_COMPTE,
 ]
 
 # Définition des permissions.
@@ -2319,7 +2301,6 @@ set_admin_group_permissions(
     accessible_user_groups=[
         ID_GROUPE_ADHERENTS_PRESTATAIRES,
         ID_GROUPE_ADHERENTS_UTILISATEURS,
-        ID_GROUPE_ADHERENTS_SANS_COMPTE,
         ID_GROUPE_COMPTES_DEDIES,
     ],
     user_profile_fields=[

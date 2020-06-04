@@ -49,13 +49,13 @@ class MembersAPIView(BaseAPIView):
         log.info(response_obj)
 
         # Cyclos: Register member
-        create_user_data = {
-            'group': str(settings.CYCLOS_CONSTANTS['groups']['adherents_sans_compte']),
-            'name': '{} {}'.format(data['firstname'], data['lastname']),
-            'username': data['login'],
-            'skipActivationEmail': True,
-        }
-        self.cyclos.post(method='user/register', data=create_user_data)
+        #create_user_data = {
+        #    'group': str(settings.CYCLOS_CONSTANTS['groups']['adherents_sans_compte']),
+        #    'name': '{} {}'.format(data['firstname'], data['lastname']),
+        #    'username': data['login'],
+        #    'skipActivationEmail': True,
+        #}
+        #self.cyclos.post(method='user/register', data=create_user_data)
 
         if data['email']:
             # Activate user pre-selected language
@@ -284,20 +284,20 @@ class MembersSubscriptionsAPIView(BaseAPIView):
             member_name = current_member['company']
 
         # Get Cyclos member and create it if it does not exist.
-        try:
-            member_cyclos_id = self.cyclos.get_member_id_from_login(current_member['login'])
-        except CyclosAPIException:
-            log.debug("Member not found in Cyclos, will create it.")
-            create_user_data = {
-                'group': str(settings.CYCLOS_CONSTANTS['groups']['adherents_sans_compte']),
-                'name': '{} {}'.format(current_member['firstname'], current_member['lastname']),
-                'username': current_member['login'],
-                'skipActivationEmail': True,
-            }
-            log.debug("create_user_data = {}".format(create_user_data))
-            response_data = self.cyclos.post(method='user/register', data=create_user_data)
-            member_cyclos_id = response_data['result']['user']['id']
-        log.debug("member_cyclos_id = {}".format(member_cyclos_id))
+        #try:
+        #    member_cyclos_id = self.cyclos.get_member_id_from_login(current_member['login'])
+        #except CyclosAPIException:
+        #    log.debug("Member not found in Cyclos, will create it.")
+        #    create_user_data = {
+        #        'group': str(settings.CYCLOS_CONSTANTS['groups']['adherents_sans_compte']),
+        #        'name': '{} {}'.format(current_member['firstname'], current_member['lastname']),
+        #        'username': current_member['login'],
+        #        'skipActivationEmail': True,
+        #    }
+        #    log.debug("create_user_data = {}".format(create_user_data))
+        #    response_data = self.cyclos.post(method='user/register', data=create_user_data)
+        #    member_cyclos_id = response_data['result']['user']['id']
+        #log.debug("member_cyclos_id = {}".format(member_cyclos_id))
 
         # Cyclos: Register member subscription payment
         query_data = {}
@@ -307,8 +307,9 @@ class MembersSubscriptionsAPIView(BaseAPIView):
                 {'type': str(settings.CYCLOS_CONSTANTS['payment_types']['cotisation_en_eusko']),
                  'currency': str(settings.CYCLOS_CONSTANTS['currencies']['eusko']),
                  'customValues': [
-                    {'field': str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['adherent']),
-                     'linkedEntityValue': member_cyclos_id}],
+                    {'field':
+                        str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['adherent_txt']),
+                     'stringValue': member_name}],
                  'description': 'Cotisation - {} - {}'.format(
                     current_member['login'], member_name),
                  })
@@ -318,8 +319,9 @@ class MembersSubscriptionsAPIView(BaseAPIView):
                 {'type': str(settings.CYCLOS_CONSTANTS['payment_types']['cotisation_en_euro']),
                  'currency': str(settings.CYCLOS_CONSTANTS['currencies']['euro']),
                  'customValues': [
-                    {'field': str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['adherent']),
-                     'linkedEntityValue': member_cyclos_id},
+                    {'field':
+                        str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['adherent_txt']),
+                     'stringValue': member_name},
                     {'field': str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['mode_de_paiement']),
                      'enumeratedValues': data['cyclos_id_payment_mode']}],
                  'description': 'Cotisation - {} - {} - {}'.format(
