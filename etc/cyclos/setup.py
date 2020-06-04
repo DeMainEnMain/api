@@ -5,6 +5,7 @@ import argparse
 import logging
 
 import requests
+import json
 from slugify import slugify
 
 try:
@@ -14,6 +15,10 @@ except NameError:  # Python 3, basestring causes NameError
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
+
+f = open("../../src/api/local_currency.json", "r")
+local_currency = json.loads(f.read())
+f.close()
 
 
 def check_request_status(r):
@@ -26,6 +31,7 @@ def check_request_status(r):
 
 def get_internal_name(name):
     name = name.replace('€', 'euro')
+    name = name.replace('T!nda', 'tinda')
     return slugify(name, separator='_')
 
 # Ensemble des constantes nécessaires à l'API.
@@ -58,7 +64,7 @@ else:
 
 # URLs des web services
 global_web_services = url + '/global/web-rpc/'
-eusko_web_services = url + '/eusko/web-rpc/'
+eusko_web_services = url + '/tinda/web-rpc/'
 
 # En-têtes pour toutes les requêtes (il n'y a qu'un en-tête, pour
 # l'authentification).
@@ -73,7 +79,7 @@ check_request_status(r)
 
 networks = r.json()['result']['pageItems']
 for network in networks:
-    if network['internalName'] == 'eusko':
+    if network['internalName'] == 'tinda':
         logger.info(networks)
         raise Exception('Cyclos est déjà configuré, utilisez le fichier cyclos_constants.yml.sample '
                         'ou supprimez la base...')
@@ -205,7 +211,7 @@ check_request_status(r)
 
 
 ########################################################################
-# Création du réseau "Eusko".
+# Création du réseau "T!nda".
 #
 # C'est le seul réseau, tout le reste du paramétrage va être fait
 # dans ce réseau. On ne crée pas d'administrateur spécifique pour ce
@@ -213,12 +219,12 @@ check_request_status(r)
 # Note : On utilise la méthode save() de l'interface CRUDService. Le
 # résultat de la requête est l'id de l'objet créé.
 #
-def create_network(name, internal_name):
+def create_network(name):
     logger.info('Création du réseau "%s"...', name)
     r = requests.post(global_web_services + 'network/save',
                       headers=headers,
                       json={
-                          'name': 'Eusko',
+                          'name': name,
                           'internalName': get_internal_name(name),
                           'enabled': True
                       })
@@ -227,11 +233,7 @@ def create_network(name, internal_name):
     logger.debug('network_id = %s', network_id)
     return network_id
 
-ID_RESEAU_EUSKO = create_network(
-    name='Eusko',
-    internal_name='eusko',
-)
-
+ID_RESEAU = create_network(local_currency["network_name"])
 
 ########################################################################
 # Création des devises "Eusko" et "Euro".
@@ -253,9 +255,9 @@ def create_currency(name, symbol):
     add_constant('currencies', name, currency_id)
     return currency_id
 
-ID_DEVISE_EUSKO = create_currency(
-    name='Eusko',
-    symbol='EUS',
+ID_DEVISE_LOCALE = create_currency(
+    name=local_currency["loc"],
+    symbol=local_currency["loc_symbol"],
 )
 ID_DEVISE_EURO = create_currency(
     name='Euro',
@@ -719,23 +721,23 @@ def create_user_account_type(name, currency_id):
 
 # Comptes système pour l'eusko billet
 ID_COMPTE_DE_DEBIT_EUSKO_BILLET = create_system_account_type(
-    name='Compte de débit eusko billet',
-    currency_id=ID_DEVISE_EUSKO,
+    name=local_currency["compte_debit_loc"],
+    currency_id=ID_DEVISE_LOCALE,
     limit_type='UNLIMITED',
 )
 ID_STOCK_DE_BILLETS = create_system_account_type(
-    name='Stock de billets',
-    currency_id=ID_DEVISE_EUSKO,
+    name=local_currency["coffre_loc"],
+    currency_id=ID_DEVISE_LOCALE,
     limit_type='LIMITED',
 )
 ID_COMPTE_DE_TRANSIT = create_system_account_type(
     name='Compte de transit',
-    currency_id=ID_DEVISE_EUSKO,
+    currency_id=ID_DEVISE_LOCALE,
     limit_type='LIMITED',
 )
 ID_COMPTE_DES_BILLETS_EN_CIRCULATION = create_system_account_type(
     name='Compte des billets en circulation',
-    currency_id=ID_DEVISE_EUSKO,
+    currency_id=ID_DEVISE_LOCALE,
     limit_type='LIMITED',
 )
 ID_COMPTE_DE_DEBIT_EURO = create_system_account_type(
@@ -752,20 +754,20 @@ ID_COMPTE_DE_DEBIT_EURO = create_system_account_type(
 # - Retours d'eusko : eusko retournés par les prestataires pour les
 #   reconvertir en € ou les déposer sur leur compte
 ID_STOCK_DE_BILLETS_BDC = create_user_account_type(
-    name='Stock de billets BDC',
-    currency_id=ID_DEVISE_EUSKO,
+    name=local_currency["stock_loc"],
+    currency_id=ID_DEVISE_LOCALE,
 )
 ID_CAISSE_EURO_BDC = create_user_account_type(
-    name='Caisse € BDC',
+    name=local_currency["caisse_euro"],
     currency_id=ID_DEVISE_EURO,
 )
 ID_CAISSE_EUSKO_BDC = create_user_account_type(
-    name='Caisse eusko BDC',
-    currency_id=ID_DEVISE_EUSKO,
+    name=local_currency["caisse_loc"],
+    currency_id=ID_DEVISE_LOCALE,
 )
 ID_RETOURS_EUSKO_BDC = create_user_account_type(
-    name="Retours d'eusko BDC",
-    currency_id=ID_DEVISE_EUSKO,
+    name=local_currency["retour_loc"],
+    currency_id=ID_DEVISE_LOCALE,
 )
 
 # Comptes utilisateur pour la gestion interne des €
@@ -782,13 +784,13 @@ ID_COMPTE_DEDIE = create_user_account_type(
 
 # Comptes pour l'eusko numérique
 ID_COMPTE_DE_DEBIT_EUSKO_NUMERIQUE = create_system_account_type(
-    name='Compte de débit eusko numérique',
-    currency_id=ID_DEVISE_EUSKO,
+    name=local_currency["compte_debit_loc_num"],
+    currency_id=ID_DEVISE_LOCALE,
     limit_type='UNLIMITED',
 )
 ID_COMPTE_ADHERENT = create_user_account_type(
     name="Compte d'adhérent",
-    currency_id=ID_DEVISE_EUSKO,
+    currency_id=ID_DEVISE_LOCALE,
 )
 
 all_system_accounts = [
@@ -1999,19 +2001,19 @@ ID_PRODUIT_STOCK_DE_BILLETS_BDC = create_member_product(
     user_account_type_id=ID_STOCK_DE_BILLETS_BDC,
 )
 ID_PRODUIT_CAISSE_EURO_BDC = create_member_product(
-    name='Caisse € BDC',
+    name=local_currency["caisse_euro"],
     user_account_type_id=ID_CAISSE_EURO_BDC,
 )
 ID_PRODUIT_CAISSE_EUSKO_BDC = create_member_product(
-    name='Caisse eusko BDC',
+    name=local_currency["caisse_loc"],
     user_account_type_id=ID_CAISSE_EUSKO_BDC,
 )
 ID_PRODUIT_RETOURS_EUSKO_BDC = create_member_product(
-    name="Retours d'eusko BDC",
+    name=local_currency["retour_loc"],
     user_account_type_id=ID_RETOURS_EUSKO_BDC,
 )
 ID_GROUPE_BUREAUX_DE_CHANGE = create_member_group(
-    name='Bureaux de change',
+    name=local_currency["exchange_location"],
     products=[
         ID_PRODUIT_STOCK_DE_BILLETS_BDC,
         ID_PRODUIT_CAISSE_EURO_BDC,

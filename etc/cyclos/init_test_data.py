@@ -41,7 +41,7 @@ for k, v in vars(args).items():
 
 # URLs des web services
 global_web_services = args.url + 'global/web-rpc/'
-eusko_web_services = args.url + 'eusko/web-rpc/'
+eusko_web_services = args.url + 'tinda/web-rpc/'
 
 # En-têtes pour toutes les requêtes (il n'y a qu'un en-tête, pour
 # l'authentification).
@@ -158,7 +158,7 @@ bureaux_de_change = {
 }
 for login, name in bureaux_de_change.items():
     id_bdc = create_user(
-        group='Bureaux de change',
+        group="Comptoir d'échange",
         name=name + ' (BDC)',
         login=login + '_BDC',
     )
