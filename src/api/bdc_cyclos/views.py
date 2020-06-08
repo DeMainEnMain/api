@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from bdc_cyclos import serializers
 from cyclos_api import CyclosAPI, CyclosAPIException
 from dolibarr_api import DolibarrAPI, DolibarrAPIException
+from common import get_internal_name
 
 log = logging.getLogger()
 
@@ -209,7 +210,7 @@ def entree_stock(request):
         payment_query_data = {
             'type': str(settings.CYCLOS_CONSTANTS['payment_types']['entree_stock_bdc']),
             'amount': payment['amount'],
-            'currency': str(settings.CYCLOS_CONSTANTS['currencies']['eusko']),
+            'currency': str(settings.CYCLOS_CONSTANTS['currencies'][get_internal_name(settings.CYCLOS_NAMES['accounts']['loc'])]),
             'from': 'SYSTEM',
             'to': cyclos.user_bdc_id,  # ID de l'utilisateur Bureau de change
             'customValues': [

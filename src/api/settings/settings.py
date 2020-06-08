@@ -224,7 +224,7 @@ CEL_PUBLIC_URL = os.environ.get('CEL_PUBLIC_URL')
 
 # APIs URLs
 DOLIBARR_URL = 'http://sauvagnon.acacs.org/api/index.php'
-CYCLOS_URL = 'http://sauvagnon.acacs.org:8080/cyclos/eusko/web-rpc'
+CYCLOS_URL = 'http://sauvagnon.acacs.org:8080/cyclos/' + get_internal_name(CYCLOS_NAMES['accounts']['network_name']) + '/web-rpc'
 
 # Euskal Moneta internal settings
 DATE_COTISATION_ANTICIPEE = '01/11'  # 1er Novembre
