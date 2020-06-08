@@ -12,7 +12,14 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 
+from slugify import slugify
 import yaml  # PyYAML
+
+
+def get_internal_name(name):
+    name = name.replace('€', 'euro')
+    name = name.replace('T!nda', 'tinda')
+    return slugify(name, separator='_')
 
 CYCLOS_CONSTANTS = None
 with open("/home/matthieu/api/etc/cyclos/cyclos_constants.yml", 'r') as cyclos_stream:
@@ -25,6 +32,13 @@ DOLIBARR_CONSTANTS = None
 with open("/home/matthieu/api/etc/dolibarr/dolibarr_constants.yml", 'r') as dolibarr_stream:
     try:
         DOLIBARR_CONSTANTS = yaml.full_load(dolibarr_stream)
+    except yaml.YAMLError as exc:
+        assert False, exc
+
+CYCLOS_NAMES = None
+with open("/home/matthieu/api/etc/cyclos/cyclos_constants_accounts.yml", 'r') as cyclos_stream:
+    try:
+        CYCLOS_NAMES = yaml.full_load(cyclos_stream)
     except yaml.YAMLError as exc:
         assert False, exc
 

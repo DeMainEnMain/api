@@ -4,8 +4,8 @@ from __future__ import unicode_literals
 import argparse
 import logging
 
+import yaml  # PyYAML
 import requests
-import json
 from slugify import slugify
 
 try:
@@ -16,10 +16,15 @@ except NameError:  # Python 3, basestring causes NameError
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
-f = open("../../src/api/local_currency.json", "r")
-local_currency = json.loads(f.read())
-f.close()
-
+def read_cyclos_name():
+    CYCLOS_NAMES = None
+    with open("/home/matthieu/api/etc/cyclos/cyclos_constants_accounts.yml", 'r') as cyclos_stream:
+        try:
+            CYCLOS_NAMES = yaml.full_load(cyclos_stream)
+        except yaml.YAMLError as exc:
+            assert False, exc
+    return CYCLOS_NAMES
+CYCLOS_NAMES = read_cyclos_name()
 
 def check_request_status(r):
     if r.status_code == requests.codes.ok:
@@ -64,7 +69,7 @@ else:
 
 # URLs des web services
 global_web_services = url + '/global/web-rpc/'
-eusko_web_services = url + '/tinda/web-rpc/'
+eusko_web_services = url + '/' +get_internal_name(CYCLOS_NAMES["accounts"]['network_name']) + '/web-rpc/'
 
 # En-têtes pour toutes les requêtes (il n'y a qu'un en-tête, pour
 # l'authentification).
@@ -79,7 +84,7 @@ check_request_status(r)
 
 networks = r.json()['result']['pageItems']
 for network in networks:
-    if network['internalName'] == 'tinda':
+    if network['internalName'] == get_internal_name(CYCLOS_NAMES["accounts"]['network_name']):
         logger.info(networks)
         raise Exception('Cyclos est déjà configuré, utilisez le fichier cyclos_constants.yml.sample '
                         'ou supprimez la base...')
@@ -233,7 +238,7 @@ def create_network(name):
     logger.debug('network_id = %s', network_id)
     return network_id
 
-ID_RESEAU = create_network(local_currency["network_name"])
+ID_RESEAU = create_network(CYCLOS_NAMES["accounts"]["network_name"])
 
 ########################################################################
 # Création des devises "Eusko" et "Euro".
@@ -256,8 +261,8 @@ def create_currency(name, symbol):
     return currency_id
 
 ID_DEVISE_LOCALE = create_currency(
-    name=local_currency["loc"],
-    symbol=local_currency["loc_symbol"],
+    name=CYCLOS_NAMES["accounts"]["loc"],
+    symbol=CYCLOS_NAMES["accounts"]["loc_symbol"],
 )
 ID_DEVISE_EURO = create_currency(
     name='Euro',
@@ -436,7 +441,8 @@ def get_data_for_new_configuration(parent_configuration):
 # défaut.
 logger.info("Création d'une nouvelle configuration pour les opérateurs BDC...")
 operateur_bdc_config = get_data_for_new_configuration(eusko_default_config_id)
-operateur_bdc_config['name'] = 'Opérateurs BDC'
+operateur_bdc_config['name'] = get_internal_name(CYCLOS_NAMES["cyclos_groups"]["exchange_point_operator"])
+logger.info(str(operateur_bdc_config))
 logger.info('Sauvegarde de la nouvelle configuration...')
 r = requests.post(
     eusko_web_services + 'configuration/save',
@@ -721,12 +727,12 @@ def create_user_account_type(name, currency_id):
 
 # Comptes système pour l'eusko billet
 ID_COMPTE_DE_DEBIT_EUSKO_BILLET = create_system_account_type(
-    name=local_currency["compte_debit_loc"],
+    name=CYCLOS_NAMES["accounts"]["compte_debit_loc"],
     currency_id=ID_DEVISE_LOCALE,
     limit_type='UNLIMITED',
 )
 ID_STOCK_DE_BILLETS = create_system_account_type(
-    name=local_currency["coffre_loc"],
+    name=CYCLOS_NAMES["accounts"]["coffre_loc"],
     currency_id=ID_DEVISE_LOCALE,
     limit_type='LIMITED',
 )
@@ -754,19 +760,19 @@ ID_COMPTE_DE_DEBIT_EURO = create_system_account_type(
 # - Retours d'eusko : eusko retournés par les prestataires pour les
 #   reconvertir en € ou les déposer sur leur compte
 ID_STOCK_DE_BILLETS_BDC = create_user_account_type(
-    name=local_currency["stock_loc"],
+    name=CYCLOS_NAMES["accounts"]["stock_loc"],
     currency_id=ID_DEVISE_LOCALE,
 )
 ID_CAISSE_EURO_BDC = create_user_account_type(
-    name=local_currency["caisse_euro"],
+    name=CYCLOS_NAMES["accounts"]["caisse_euro"],
     currency_id=ID_DEVISE_EURO,
 )
 ID_CAISSE_EUSKO_BDC = create_user_account_type(
-    name=local_currency["caisse_loc"],
+    name=CYCLOS_NAMES["accounts"]["caisse_loc"],
     currency_id=ID_DEVISE_LOCALE,
 )
 ID_RETOURS_EUSKO_BDC = create_user_account_type(
-    name=local_currency["retour_loc"],
+    name=CYCLOS_NAMES["accounts"]["retour_loc"],
     currency_id=ID_DEVISE_LOCALE,
 )
 
@@ -784,7 +790,7 @@ ID_COMPTE_DEDIE = create_user_account_type(
 
 # Comptes pour l'eusko numérique
 ID_COMPTE_DE_DEBIT_EUSKO_NUMERIQUE = create_system_account_type(
-    name=local_currency["compte_debit_loc_num"],
+    name=CYCLOS_NAMES["accounts"]["compte_debit_loc_num"],
     currency_id=ID_DEVISE_LOCALE,
     limit_type='UNLIMITED',
 )
@@ -1008,13 +1014,13 @@ def create_transfer_fee(name, original_transfer_type, generated_transfer_type,
 # Types de paiement pour l'eusko billet
 #
 ID_TYPE_PAIEMENT_IMPRESSION_BILLETS = create_payment_transfer_type(
-    name="Impression de billets d'eusko",
+    name=CYCLOS_NAMES["transfers"]["loc_printing"],
     direction='SYSTEM_TO_SYSTEM',
     from_account_type_id=ID_COMPTE_DE_DEBIT_EUSKO_BILLET,
     to_account_type_id=ID_STOCK_DE_BILLETS,
 )
 ID_TYPE_PAIEMENT_DESTRUCTION_BILLETS = create_payment_transfer_type(
-    name="Destruction de billets d'eusko",
+    name=CYCLOS_NAMES["transfers"]["loc_destructing"],
     direction='SYSTEM_TO_SYSTEM',
     from_account_type_id=ID_STOCK_DE_BILLETS,
     to_account_type_id=ID_COMPTE_DE_DEBIT_EUSKO_BILLET,
@@ -1974,7 +1980,7 @@ change_group_configuration(ID_GROUPE_GESTION_INTERNE,
 # Un utilisateur est créé dans ce groupe pour chaque bureau de change,
 # et lié à l'utilisateur "Bureau de change" correspondant.
 ID_GROUPE_OPERATEURS_BDC = create_admin_group(
-    name='Opérateurs BDC',
+    name=CYCLOS_NAMES["cyclos_groups"]["exchange_point_operator"],
 )
 change_group_configuration(ID_GROUPE_OPERATEURS_BDC,
                            ID_CONFIG_OPERATEURS_BDC)
@@ -2001,19 +2007,19 @@ ID_PRODUIT_STOCK_DE_BILLETS_BDC = create_member_product(
     user_account_type_id=ID_STOCK_DE_BILLETS_BDC,
 )
 ID_PRODUIT_CAISSE_EURO_BDC = create_member_product(
-    name=local_currency["caisse_euro"],
+    name=CYCLOS_NAMES["accounts"]["caisse_euro"],
     user_account_type_id=ID_CAISSE_EURO_BDC,
 )
 ID_PRODUIT_CAISSE_EUSKO_BDC = create_member_product(
-    name=local_currency["caisse_loc"],
+    name=CYCLOS_NAMES["accounts"]["caisse_loc"],
     user_account_type_id=ID_CAISSE_EUSKO_BDC,
 )
 ID_PRODUIT_RETOURS_EUSKO_BDC = create_member_product(
-    name=local_currency["retour_loc"],
+    name=CYCLOS_NAMES["accounts"]["retour_loc"],
     user_account_type_id=ID_RETOURS_EUSKO_BDC,
 )
 ID_GROUPE_BUREAUX_DE_CHANGE = create_member_group(
-    name=local_currency["exchange_location"],
+    name=CYCLOS_NAMES["cyclos_groups"]["exchange_point"],
     products=[
         ID_PRODUIT_STOCK_DE_BILLETS_BDC,
         ID_PRODUIT_CAISSE_EURO_BDC,

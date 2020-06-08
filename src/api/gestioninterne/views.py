@@ -16,6 +16,7 @@ from cyclos_api import CyclosAPI, CyclosAPIException
 from dolibarr_api import DolibarrAPI, DolibarrAPIException
 from gestioninterne import serializers
 
+
 log = logging.getLogger()
 
 
@@ -35,7 +36,7 @@ def sortie_coffre(request):
     sortie_coffre_query_data = {
         'type': str(settings.CYCLOS_CONSTANTS['payment_types']['sortie_coffre']),
         'amount': request.data['amount'],  # montant saisi par l'utilisateur
-        'currency': str(settings.CYCLOS_CONSTANTS['currencies']['eusko']),
+        'currency': str(settings.CYCLOS_CONSTANTS['currencies'][settings.get_internal_name(settings.CYCLOS_NAMES['loc'])]),
         'from': 'SYSTEM',
         'to': 'SYSTEM',
         'customValues': [

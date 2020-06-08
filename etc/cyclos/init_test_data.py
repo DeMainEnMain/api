@@ -7,11 +7,27 @@ import logging
 
 import requests
 import yaml  # PyYAML
+from slugify import slugify
+
+def get_internal_name(name):
+    name = name.replace('€', 'euro')
+    name = name.replace('T!nda', 'tinda')
+    return slugify(name, separator='_')
+
+def read_cyclos_name():
+    CYCLOS_NAMES = None
+    with open("/home/matthieu/api/etc/cyclos/cyclos_constants_accounts.yml", 'r') as cyclos_stream:
+        try:
+            CYCLOS_NAMES = yaml.full_load(cyclos_stream)
+        except yaml.YAMLError as exc:
+            assert False, exc
+    return CYCLOS_NAMES
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
 
+CYCLOS_NAMES = read_cyclos_name()
 def check_request_status(r):
     if r.status_code == requests.codes.ok:
         logger.info('OK')
@@ -41,7 +57,7 @@ for k, v in vars(args).items():
 
 # URLs des web services
 global_web_services = args.url + 'global/web-rpc/'
-eusko_web_services = args.url + 'tinda/web-rpc/'
+eusko_web_services = args.url + get_internal_name(CYCLOS_NAMES["accounts"]['network_name']) + '/web-rpc/'
 
 # En-têtes pour toutes les requêtes (il n'y a qu'un en-tête, pour
 # l'authentification).
@@ -158,12 +174,12 @@ bureaux_de_change = {
 }
 for login, name in bureaux_de_change.items():
     id_bdc = create_user(
-        group="Comptoir d'échange",
+        group=CYCLOS_NAMES["cyclos_groups"]["exchange_point"],
         name=name + ' (BDC)',
         login=login + '_BDC',
     )
     create_user(
-        group='Opérateurs BDC',
+        group=CYCLOS_NAMES["cyclos_groups"]["exchange_point_operator"],
         name=name,
         login=login,
         password=login,
@@ -199,27 +215,27 @@ logger.info('Récupération des constantes depuis le YAML...')
 CYCLOS_CONSTANTS = None
 with open("./cyclos_constants.yml", 'r') as cyclos_stream:
     try:
-        CYCLOS_CONSTANTS = yaml.load(cyclos_stream)
+        CYCLOS_CONSTANTS = yaml.full_load(cyclos_stream)
     except yaml.YAMLError as exc:
         assert False, exc
 
 # Impression billets eusko
 logger.info('Impression billets eusko...')
-logger.debug(str(CYCLOS_CONSTANTS['payment_types']['impression_de_billets_d_eusko']) + "\r\n" +
-             str(CYCLOS_CONSTANTS['currencies']['eusko']) + "\r\n" +
-             str(CYCLOS_CONSTANTS['account_types']['compte_de_debit_eusko_billet']) + "\r\n" +
-             str(CYCLOS_CONSTANTS['account_types']['stock_de_billets']))
+logger.debug(str(CYCLOS_CONSTANTS['payment_types'][get_internal_name(CYCLOS_NAMES['transfers']['loc_printing'])]) + '\r\n' +
+             str(CYCLOS_CONSTANTS['currencies'][   get_internal_name(CYCLOS_NAMES['accounts']['loc'])]) + '\r\n' +
+             str(CYCLOS_CONSTANTS['account_types'][get_internal_name(CYCLOS_NAMES['accounts']['compte_debit_loc'])]) + '\r\n' +
+             str(CYCLOS_CONSTANTS['account_types'][get_internal_name(CYCLOS_NAMES['accounts']['coffre_loc'])]))
 
 r = requests.post(eusko_web_services + 'payment/perform',
                   headers={'Authorization': 'Basic {}'.format(base64.standard_b64encode(b'demo:demo').decode('utf-8'))},  # noqa
                   json={
-                      'type': CYCLOS_CONSTANTS['payment_types']['impression_de_billets_d_eusko'],
+                      'type': CYCLOS_CONSTANTS['payment_types'][get_internal_name(CYCLOS_NAMES['transfers']['loc_printing'])],
                       'amount': 126500,
-                      'currency': CYCLOS_CONSTANTS['currencies']['eusko'],
+                      'currency': CYCLOS_CONSTANTS['currencies'][   get_internal_name(CYCLOS_NAMES['accounts']['loc'])],
                       'from': 'SYSTEM',
                       'to': 'SYSTEM',
                   })
 
-logger.info('Impression billets eusko... Terminé !')
+logger.info('Impression billets %s... Terminé !'%CYCLOS_NAMES['accounts']['loc'])
 logger.debug(r.json())
 logger.info('Fin du script !')
