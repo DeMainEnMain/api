@@ -624,13 +624,6 @@ ID_CHAMP_PERSO_PAIEMENT_MODE_DE_PAIEMENT = create_transaction_custom_field_singl
         'Virement',
     ],
 )
-ID_CHAMP_PERSO_PAIEMENT_PRODUIT = create_transaction_custom_field_single_selection(
-    name='Produit',
-    possible_values_name='products',
-    possible_values=[
-        'Foulard',
-    ],
-)
 
 ID_CHAMP_PERSO_PAIEMENT_NUMERO_BORDEREAU = create_transaction_custom_field_text(
     name='Numéro de bordereau',
@@ -660,7 +653,6 @@ all_transaction_fields = [
     ID_CHAMP_PERSO_PAIEMENT_ADHERENT,
     ID_CHAMP_PERSO_PAIEMENT_ADHERENT_FACULTATIF,
     ID_CHAMP_PERSO_PAIEMENT_MODE_DE_PAIEMENT,
-    ID_CHAMP_PERSO_PAIEMENT_PRODUIT,
     ID_CHAMP_PERSO_PAIEMENT_NUMERO_BORDEREAU,
     ID_CHAMP_PERSO_PAIEMENT_MONTANT_COTISATIONS,
     ID_CHAMP_PERSO_PAIEMENT_MONTANT_CHANGES_BILLET,
