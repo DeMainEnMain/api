@@ -598,10 +598,7 @@ ID_CHAMP_PERSO_PAIEMENT_BDC = create_transaction_custom_field_linked_user(
 ID_CHAMP_PERSO_PAIEMENT_PORTEUR = create_transaction_custom_field_text(
     name='Porteur',
 )
-ID_CHAMP_PERSO_PAIEMENT_ADHERENT_TXT = create_transaction_custom_field_text(
-    name='Adhérent_txt',
-)
-ID_CHAMP_PERSO_PAIEMENT_ADHERENT = create_transaction_custom_field_linked_user(
+ID_CHAMP_PERSO_PAIEMENT_ADHERENT = create_transaction_custom_field_text(
     name='Adhérent',
 )
 ID_CHAMP_PERSO_PAIEMENT_ADHERENT_FACULTATIF = create_transaction_custom_field_text(
@@ -653,7 +650,6 @@ all_transaction_fields = [
     ID_CHAMP_PERSO_PAIEMENT_BDC,
     ID_CHAMP_PERSO_PAIEMENT_PORTEUR,
     ID_CHAMP_PERSO_PAIEMENT_ADHERENT,
-    ID_CHAMP_PERSO_PAIEMENT_ADHERENT_TXT,
     ID_CHAMP_PERSO_PAIEMENT_ADHERENT_FACULTATIF,
     ID_CHAMP_PERSO_PAIEMENT_MODE_DE_PAIEMENT,
     ID_CHAMP_PERSO_PAIEMENT_PRODUIT,
@@ -1100,7 +1096,7 @@ ID_TYPE_PAIEMENT_SORTIE_RETOURS_EUSKO_BDC = create_payment_transfer_type(
     to_account_type_id=ID_COMPTE_DE_TRANSIT,
     custom_fields=[
         ID_CHAMP_PERSO_PAIEMENT_PORTEUR,
-        ID_CHAMP_PERSO_PAIEMENT_ADHERENT_TXT,
+        ID_CHAMP_PERSO_PAIEMENT_ADHERENT,
     ],
     status_flows=[
         ID_STATUS_FLOW_RAPPROCHEMENT,
@@ -1142,7 +1138,7 @@ ID_TYPE_PAIEMENT_CHANGE_BILLETS_VERSEMENT_DES_EUROS = create_payment_transfer_ty
     from_account_type_id=ID_COMPTE_DE_DEBIT_EURO,
     to_account_type_id=ID_CAISSE_EURO_BDC,
     custom_fields=[
-        ID_CHAMP_PERSO_PAIEMENT_ADHERENT_TXT,
+        ID_CHAMP_PERSO_PAIEMENT_ADHERENT,
         ID_CHAMP_PERSO_PAIEMENT_MODE_DE_PAIEMENT,
     ],
     status_flows=[
@@ -1175,7 +1171,7 @@ ID_TYPE_PAIEMENT_RECONVERSION_BILLETS = create_payment_transfer_type(
     from_account_type_id=ID_COMPTE_DES_BILLETS_EN_CIRCULATION,
     to_account_type_id=ID_RETOURS_EUSKO_BDC,
     custom_fields=[
-        ID_CHAMP_PERSO_PAIEMENT_ADHERENT_TXT,
+        ID_CHAMP_PERSO_PAIEMENT_ADHERENT,
         ID_CHAMP_PERSO_PAIEMENT_NUMERO_FACTURE,
     ],
     status_flows=[
@@ -1193,7 +1189,7 @@ ID_TYPE_PAIEMENT_COTISATION_EN_EURO = create_payment_transfer_type(
     from_account_type_id=ID_COMPTE_DE_DEBIT_EURO,
     to_account_type_id=ID_CAISSE_EURO_BDC,
     custom_fields=[
-        ID_CHAMP_PERSO_PAIEMENT_ADHERENT_TXT,
+        ID_CHAMP_PERSO_PAIEMENT_ADHERENT,
         ID_CHAMP_PERSO_PAIEMENT_MODE_DE_PAIEMENT,
     ],
     status_flows=[
@@ -1209,7 +1205,7 @@ ID_TYPE_PAIEMENT_COTISATION_EN_EUSKO = create_payment_transfer_type(
     from_account_type_id=ID_COMPTE_DES_BILLETS_EN_CIRCULATION,
     to_account_type_id=ID_CAISSE_EUSKO_BDC,
     custom_fields=[
-        ID_CHAMP_PERSO_PAIEMENT_ADHERENT_TXT,
+        ID_CHAMP_PERSO_PAIEMENT_ADHERENT,
     ],
     status_flows=[
         ID_STATUS_FLOW_REMISE_A_EM,

@@ -146,8 +146,8 @@ def entree_coffre(request):
                     value['stringValue']
                     for value in payment['customValues']
                     if value['field']['id'] ==
-                    str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['adherent_txt']) and  # noqa
-                    value['field']['internalName'] == 'adherent_txt'
+                    str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['adherent']) and  # noqa
+                    value['field']['internalName'] == 'adherent'
                 ][0]
             except (KeyError, IndexError):
                 return Response({'error': 'Unable to get adherent_id from one of your selected_payments!'},

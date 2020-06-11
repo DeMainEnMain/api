@@ -310,8 +310,8 @@ def change_euro_eusko(request):
         'customValues': [
             {
                 'field':
-                str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['adherent_txt']),
-                'stringValue': member_name  # nom de l'adhérent
+                str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['adherent']),
+                'stringValue': request.data['member_login'] # login de l'adhérent
             },
             {
                 'field': str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['mode_de_paiement']),
@@ -361,8 +361,8 @@ def reconversion(request):
         'to': cyclos.user_bdc_id,  # ID de l'utilisateur Bureau de change
         'customValues': [
             {
-                'field': str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['adherent_txt']),
-                'stringValue': dolibarr_member['company']  # ID de l'adhérent
+                'field': str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['adherent']),
+                'stringValue': request.data['member_login']  # ID de l'adhérent
             },
             {
                 'field': str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['numero_de_facture']),
@@ -550,10 +550,6 @@ def bank_deposit(request):
             {
                 'field': str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['montant_cotisations']),
                 'decimalValue': montant_cotisations  # calculé
-            },
-            {
-                'field': str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['montant_ventes']),
-                'decimalValue': montant_ventes  # calculé
             },
             {
                 'field': str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['montant_changes_billet']),
@@ -762,12 +758,12 @@ def sortie_retour_eusko(request):
 
     for payment in request.data['selected_payments']:
         try:
-            adherent_name = [
+            adherent_login = [
                 value['stringValue']
                 for value in payment['customValues']
                 if value['field']['id'] ==
-                str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['adherent_txt']) and
-                value['field']['internalName'] == 'adherent_txt'
+                str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['adherent']) and
+                value['field']['internalName'] == 'adherent'
             ][0]
         except (KeyError, IndexError):
             return Response({'error': 'Unable to get adherent_id from one of your selected_payments!'},
@@ -783,8 +779,8 @@ def sortie_retour_eusko(request):
             'customValues': [
                 {
                     'field':
-                    str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['adherent_txt']),
-                    'stringValue': adherent_name,  # nom de l'adhérent
+                    str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['adherent']),
+                    'stringValue': adherent_login,  # login de l'adhérent
                 },
                 {
                     'field': str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['porteur']),
