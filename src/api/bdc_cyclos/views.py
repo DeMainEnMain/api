@@ -843,7 +843,7 @@ def depot_eusko_numerique(request):
         'customValues': [
             {
                 'field': str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['adherent']),
-                'linkedEntityValue': member_cyclos_id  # ID de l'adhérent
+                'stringValue': request.data['member_login'] # login de l'adhérent
             },
         ],
         'description': 'Dépôt - {} - {}'.format(request.data['member_login'], member_name),
@@ -958,7 +958,7 @@ def retrait_eusko_numerique(request):
         'customValues': [
             {
                 'field': str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['adherent']),
-                'linkedEntityValue': member_cyclos_id,  # ID de l'adhérent
+                'stringValue': request.data['member_login']  # login de l'adhérent
             },
         ],
         'description': 'Retrait - {} - {}'.format(request.data['member_login'], member_name),
@@ -1084,7 +1084,7 @@ def change_euro_eusko_numeriques(request):
         'customValues': [
             {
                 'field': str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['adherent']),
-                'linkedEntityValue': member_cyclos_id  # ID de l'adhérent
+                'stringValue': request.data['member_login'] # login de l'adhérent
             },
             {
                 'field': str(settings.CYCLOS_CONSTANTS['transaction_custom_fields']['mode_de_paiement']),
