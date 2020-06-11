@@ -1,8 +1,8 @@
 # Local settings that are environment dependent and 
 # also things you do not want to see appearing in the repo like 
 # keys
-# This file is a template and has to be put in the settings directory of
-# the django app
+# This file is a template and has to be put in the base directory of
+# the django app, i.e. api/src/api
 
 NETWORK_NAME = "eusko"
 DATABASE_NAME = "api"
