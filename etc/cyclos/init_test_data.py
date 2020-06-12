@@ -152,9 +152,9 @@ for login, name in gestion_interne.items():
     )
 
 bureaux_de_change = {
-    'B001': 'Euskal Moneta',
-    'B002': 'Le Fandango',
-    'B003': 'Café des Pyrénées',
+    'B004': 'De Main en Main',
+    'B005': 'La brasserie Béarnaise',
+    'B006': 'Le Village Emmaüs',
 }
 for login, name in bureaux_de_change.items():
     id_bdc = create_user(
@@ -192,7 +192,7 @@ for login, name in adherents.items():
     )
 
 prestataires = {
-    'Z00001': 'Euskal Moneta',
+    'Z00001': 'De Main en Main',
     'Z00003': 'Guilde des Mendiants',
 }
 for login, name in prestataires.items():
