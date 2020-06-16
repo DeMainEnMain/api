@@ -388,18 +388,6 @@ def validate_banques_virement(request):
         }
         cyclos.post(method='payment/perform', data=cotisation_query)
 
-    # Ventes
-    if request.data['montant_total_ventes']:
-        ventes_query = {
-            'type': str(settings.CYCLOS_CONSTANTS['payment_types']['virement_de_banque_de_depot_vers_compte_debit_euro']),  # noqa
-            'amount': request.data['montant_total_ventes'],  # montant du virement "Ventes"
-            'currency': str(settings.CYCLOS_CONSTANTS['currencies']['euro']),
-            'from': bank_user_data['id'],  # ID de l'utilisateur Banque de dépôt
-            'to': 'SYSTEM',
-            'description': '{} - Ventes'.format(bank_user_data['display'])  # nom de la banque de dépôt
-        }
-        cyclos.post(method='payment/perform', data=ventes_query)
-
     # Change eusko billet
     if request.data['montant_total_billet']:
         change_eusko_billet_query = {
