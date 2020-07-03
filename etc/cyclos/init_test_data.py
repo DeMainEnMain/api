@@ -136,7 +136,7 @@ r = requests.get(eusko_web_services + 'userCustomField/list', headers=headers)
 check_request_status(r)
 user_custom_fields = r.json()['result']
 for field in user_custom_fields:
-    if field['internalName'] == 'bdc':
+    if field['internalName'] == 'member_counter_exchange':
         id_user_custom_field_bdc = field['id']
 
 gestion_interne = {

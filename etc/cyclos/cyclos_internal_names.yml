@@ -1,0 +1,111 @@
+access_clients:
+  point_of_sale_nfc: Point de vente NFC
+account_types:
+  deposit_bank: Banque de dépôt
+  euro_cash_register: Caisse € BDC
+  lcy_cash_register: Caisse eusko BDC
+  lcy_back_cash_register: Retours d'eusko BDC
+  lcy_stock_cash_register: Stock de billets BDC
+  member_account: Compte d'adhérent
+  dedicated_account: Compte dédié
+currencies:
+  euro: Euro
+  euro_symbol: €
+  lcy: Eusko
+  lcy_symbol: EUS
+  cyclos_network: eusko
+groups:
+  business_members: Adhérents prestataires
+  user_members: Adhérents utilisateurs
+  anonymous: Anonyme
+  deposit_banks: Banques de dépôt
+  exchange_counters: Bureaux de change
+  exchange_counter_operators: Opérateurs BDC
+  dedicated_accounts: Comptes dédiés
+  central_management: Gestion interne
+  #password_types:
+  #  login_password: 7456265078841012263
+  #  one_time_password: 7456265078841012903
+  #  pin: 7456265078841012519
+  #  transaction_password: 7456265078841012647
+payment_modes:
+  cheque: Chèque
+  cash: Espèces
+  online: Paiement en ligne
+  direct_debit_authority: Prélèvement
+  direct_debit: Virement
+payment_types:
+  banknote_exchange_euro_payment: Change billets - Versement des €
+  banknote_exchange_lcy_payment: Change billets - Versement des eusko
+  num_exchange_in_exchange_counter_euro_payment: Change numérique en BDC - Versement des €
+  num_exchange_online_euro_payment: Change numérique en ligne - Versement des €
+  num_exchange_online_lcy_payment: Change numérique en ligne - Versement des eusko
+  subscription_in_euro: Cotisation en €
+  subscription_in_eusko: Cotisation en eusko
+  credit_entry_on_account: Crédit du compte
+  from_lcy_back_to_lcy_stock: De Retours d'eusko BDC vers Stock de billets BDC
+  from_lcy_stock_to_lcy_back: De Stock de billets BDC vers Retours d'eusko BDC
+  banknote_deposit: Dépôt de billets
+  bank_deposit: Dépôt en banque
+  banknote_destruction: Destruction de billets d'eusko
+  banknote_printing: Impression de billets d'eusko
+  banknote_found: Gain de billets
+  banknote_lost: Perte de billets
+  vault_entry: Entrée coffre
+  lcy_stock_cash_register_entry: Entrée stock BDC
+  from_deposit_bank_to_euro_cash_register: Paiement de Banque de dépôt vers Caisse € BDC
+  from_euro_cash_register_to_deposit_bank: Paiement de Caisse € BDC vers Banque de dépôt
+  debit_card_payment: Paiement par carte
+  converting_back_banknote_lcy_payment: Reconversion billets - Versement des eusko
+  converting_back_num: Reconversion numérique
+  excessive_deposit_regularisation: Régularisation dépôt excessif
+  insufficient_deposit_regularisation: Régularisation dépôt insuffisant
+  from_euro_cash_register_to_debit_account_euro: Remise d'€ en caisse
+  banknote_withdraw: Retrait de billets
+  account_withdraw: Retrait du compte
+  lcy_cash_register_withdraw: Sortie caisse eusko BDC
+  vault_withdraw: Sortie coffre
+  lcy_back_cash_register_withdraw: Sortie retours eusko BDC
+  lcy_stock_cash_register_withdraw: Sortie stock BDC
+  from_deposit_bank_to_debit_account_euro: Virement de Banque de dépôt vers Compte débit €
+  from_deposit_bank_to_dedicated_account: Virement de Banque de dépôt vers Compte dédié
+  from_dedicated_account_to_debit_account_euro: Virement de Compte dédié vers Compte débit €
+  between_dedicated_accounts_transfer: Virement entre comptes dédiés
+  between_member_accounts_transfer: Virement inter-adhérent
+tokens:
+  nfc_card: Carte NFC
+transaction_custom_fields:
+  member: Adhérent
+  member_optional: Adhérent (facultatif)
+  counter_exchange: BDC
+  payment_mode: Mode de paiement
+  banknote_exchange_amount: Montant Changes billet
+  num_exchange_amount: Montant Changes numérique
+  subscription_amount: Montant Cotisations
+  deposit_slip_number: Numéro de bordereau
+  Invoice_number: Numéro de facture
+  bank_transaction_number: Numéro de transaction banque
+  carrier: Porteur
+transfer_status_flows:
+  bank_reconciliation: Rapprochement
+  remittance_to_lcy_association: Remise à Euskal Moneta
+  bank_transfers: Virements
+transfer_statuses:
+  bank_reconciliation_to_do: A rapprocher
+  to_remit_to_lcy_association: A remettre à Euskal Moneta
+  reconciliated: Rapproché
+  remitted_to_lcy_association: Remis à Euskal Moneta
+  transfers_to_do: Virements à faire
+  transfers_done: Virements faits
+user_custom_fields:
+  member_counter_exchange: BDC
+users:
+  banknote_lcy_dedicated_account: Compte dédié eusko billet
+  num_lcy_dedicated_account: Compte dédié eusko numérique
+system_accounts:
+  debit_account_euro: Compte de débit €
+  debit_account_lcy_num: Compte de débit eusko numérique
+  debit_account_lcy_banknote: Compte de débit eusko billet
+  transit_account: Compte de transit
+  circulating_banknote_account: Compte des billets en circulation
+  vault: Stock de billets
