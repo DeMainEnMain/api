@@ -30,14 +30,24 @@ def gen_code_snippet():
 def gen_constant_internal():
 
     constants_file = open('/home/matthieu/api/etc/cyclos/cyclos_constants_internal.yml', 'w')
+    correspondance_file = open('/home/matthieu/api/etc/cyclos/cyclos_internal_correpondance.yml', 'w')
     for category in sorted(internal_names.keys()):
+        correspondance_file.write(category + ':\n')
         for i_name in sorted(internal_names[category].keys()):
             name = internal_names[category][i_name]
             try:
-                cst_id = cyclos_constant[category][get_internal_name(name)]
+                old_i_name = get_internal_name(name)
+                cst_id = cyclos_constant[category][old_i_name]
                 constants_file.write("%s: '%d'\n"%(i_name, cst_id))
+                correspondance_file.write("  %s: '%s'\n"%(old_i_name, i_name))
             except:
                 print("skipping " + i_name)
+
+def refactor_api():
+    file_to_refactor = ['../../src/api/bdc_cyclos/views.py']
+    #for f in file_to_refactor:
+    #    re.
+
 
 cyclos_constant = None
 with open("/home/matthieu/api/etc/cyclos/cyclos_constants.yml", 'r') as cyclos_stream:
