@@ -41,6 +41,7 @@ class CyclosAPI(object):
                 self._init_gi_bdc()
         except AttributeError:
             pass
+        self.id = settings.CYCLOS_CONSTANTS_INTERNAL
 
     def _init_bdc(self):
         # getCurrentUser => get ID for current user

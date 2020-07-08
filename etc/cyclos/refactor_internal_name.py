@@ -27,6 +27,18 @@ def gen_code_snippet():
     f.write(to_dump)
     f.close()
 
+def gen_constant_internal():
+
+    constants_file = open('/home/matthieu/api/etc/cyclos/cyclos_constants_internal.yml', 'w')
+    for category in sorted(internal_names.keys()):
+        for i_name in sorted(internal_names[category].keys()):
+            name = internal_names[category][i_name]
+            try:
+                cst_id = cyclos_constant[category][get_internal_name(name)]
+                constants_file.write("%s: '%d'\n"%(i_name, cst_id))
+            except:
+                print("skipping " + i_name)
+
 cyclos_constant = None
 with open("/home/matthieu/api/etc/cyclos/cyclos_constants.yml", 'r') as cyclos_stream:
     try:
@@ -45,3 +57,5 @@ with open("/home/matthieu/api/etc/cyclos/cyclos_internal_names.yml", 'r') as cyc
 check_yml_consistency()
 
 gen_code_snippet()
+
+gen_constant_internal()

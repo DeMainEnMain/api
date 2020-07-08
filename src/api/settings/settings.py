@@ -22,6 +22,13 @@ with open(CYCLOS_CONSTANT_FILE, 'r') as cyclos_stream:
     except yaml.YAMLError as exc:
         assert False, exc
 
+CYCLOS_CONSTANTS_INTERNAL = None
+with open(CYCLOS_CONSTANT_FILE_INTERNAL, 'r') as cyclos_stream:
+    try:
+        CYCLOS_CONSTANTS_INTERNAL = yaml.full_load(cyclos_stream)
+    except yaml.YAMLError as exc:
+        assert False, exc
+
 DOLIBARR_CONSTANTS = None
 with open(DOLIBARR_CONSTANT_FILE, 'r') as dolibarr_stream:
     try:

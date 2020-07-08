@@ -36,7 +36,6 @@ payment_modes:
   direct_debit: Virement
 payment_types:
   banknote_exchange_euro_payment: Change billets - Versement des €
-  banknote_exchange_lcy_payment: Change billets - Versement des eusko
   num_exchange_in_exchange_counter_euro_payment: Change numérique en BDC - Versement des €
   num_exchange_online_euro_payment: Change numérique en ligne - Versement des €
   num_exchange_online_lcy_payment: Change numérique en ligne - Versement des eusko
