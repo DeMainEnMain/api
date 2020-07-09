@@ -23,11 +23,11 @@ groups:
   exchange_counter_operators: Opérateurs BDC
   dedicated_accounts: Comptes dédiés
   central_management: Gestion interne
-  #password_types:
-  #  login_password: 7456265078841012263
-  #  one_time_password: 7456265078841012903
-  #  pin: 7456265078841012519
-  #  transaction_password: 7456265078841012647
+password_types:
+  login_password: login_password
+  one_time_password: one_time_password
+  pin: pin
+  transaction_password: transaction_password
 payment_modes:
   cheque: Chèque
   cash: Espèces
@@ -36,6 +36,7 @@ payment_modes:
   direct_debit: Virement
 payment_types:
   banknote_exchange_euro_payment: Change billets - Versement des €
+  banknote_exchange_lcy_payment: Change billets - Versement des eusko
   num_exchange_in_exchange_counter_euro_payment: Change numérique en BDC - Versement des €
   num_exchange_online_euro_payment: Change numérique en ligne - Versement des €
   num_exchange_online_lcy_payment: Change numérique en ligne - Versement des eusko
