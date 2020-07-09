@@ -48,6 +48,7 @@ def refactor_api():
     file_to_refactor = ['../../src/api/bdc_cyclos/views.py']
     p = re.compile("[str\(]*settings.CYCLOS_CONSTANTS\['([\w_-]*)'\]\['([\w_-]*)'\][\)]*")
     p2 = re.compile("settings.CYCLOS_CONSTANTS\[")
+    q = re.compile("\['field'\]\['internalName'\] == '([\w_-]*)'")
     for fn in file_to_refactor:
         f = open(fn, 'r')
         content = f.readlines()
@@ -67,6 +68,13 @@ def refactor_api():
                 content[index] = l
                 nb_replace += 1
 
+            result = q.search(l)
+            if result != None:
+                replace_str = r"['field']['internalName'] == '%s'"%correpondance['transaction_custom_fields'][result.group(1)]
+                l = q.sub(replace_str, l)
+                content[index] = l
+                nb_replace += 1
+                nb_occurence += 1
 
         print("%d occurences in %s, %d replacements => %d remaining manual changes"%(nb_occurence,
             fn, nb_replace, nb_occurence-nb_replace))
@@ -102,6 +110,6 @@ with open("/home/matthieu/api/etc/cyclos/cyclos_internal_correpondance.yml", 'r'
 #
 #gen_code_snippet()
 #
-#gen_constant_internal()
+gen_constant_internal()
 
 refactor_api()

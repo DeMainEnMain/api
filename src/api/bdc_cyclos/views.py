@@ -981,11 +981,13 @@ def payments_available_for_entree_stock(request):
 
     # account/searchAccountHistory
     search_history_data = {
-        'account': cyclos.id['transit_account'],
+        'account': str(settings.CYCLOS_CONSTANTS['system_accounts']['compte_de_transit']),
         'orderBy': 'DATE_DESC',
         'direction': 'CREDIT',
         'fromNature': 'SYSTEM',
-        'statuses': [cyclos.id['bank_reconciliation_to_do']],
+        'statuses': [
+            str(settings.CYCLOS_CONSTANTS['transfer_statuses']['a_rapprocher'])
+        ],
         'pageSize': 1000,  # maximum pageSize: 1000
         'currentPage': 0,
     }
@@ -997,7 +999,7 @@ def payments_available_for_entree_stock(request):
         for item in accounts_summaries_res['result']['pageItems']
         for value in item['customValues']
         if item['type']['id'] == str(settings.CYCLOS_CONSTANTS['payment_types']['sortie_coffre']) and
-        value['field']['internalName'] == 'counter_exchange' and
+        value['field']['internalName'] == 'bdc' and
         value['linkedEntityValue']['id'] == cyclos.user_bdc_id
     ]
 

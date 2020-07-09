@@ -83,7 +83,7 @@ transaction_custom_fields:
   num_exchange_amount: Montant Changes numérique
   subscription_amount: Montant Cotisations
   deposit_slip_number: Numéro de bordereau
-  Invoice_number: Numéro de facture
+  invoice_number: Numéro de facture
   bank_transaction_number: Numéro de transaction banque
   carrier: Porteur
 transfer_status_flows:
