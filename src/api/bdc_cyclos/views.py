@@ -895,8 +895,7 @@ def retrait_eusko_numerique(request):
     member_account_summary_res = cyclos.post(method='account/getAccountsSummary', data=member_account_summary_query)
 
     try:
-        if (member_account_summary_res['result'][0]['type']['id'] !=
-           cyclos.id['member_account']:
+        if (member_account_summary_res['result'][0]['type']['id'] != cyclos.id['member_account']):
             return Response({'error': "Unable to fetch account data!"},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     except (KeyError, IndexError):
