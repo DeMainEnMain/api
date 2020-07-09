@@ -2,6 +2,7 @@
 import yaml  # PyYAML
 
 from slugify import slugify
+import re
 
 def get_internal_name(name):
     name = name.replace('€', 'euro')
@@ -45,8 +46,34 @@ def gen_constant_internal():
 
 def refactor_api():
     file_to_refactor = ['../../src/api/bdc_cyclos/views.py']
-    #for f in file_to_refactor:
-    #    re.
+    p = re.compile("[str\(]*settings.CYCLOS_CONSTANTS\['([\w_-]*)'\]\['([\w_-]*)'\][\)]*")
+    p2 = re.compile("settings.CYCLOS_CONSTANTS\[")
+    for fn in file_to_refactor:
+        f = open(fn, 'r')
+        content = f.readlines()
+        f.close()
+        nb_replace = 0
+        nb_occurence = 0
+        for index, l in enumerate(content):
+            result = p2.search(l)
+            if result != None:
+                nb_occurence += 1
+
+            result = p.search(l)
+            if result != None:
+                replace_str = r"cyclos.id['%s']"%correpondance[result.group(1)][result.group(2)]
+                #print(result.group(0), replace_str)#result.group(1), r.group(2))
+                l = p.sub(replace_str, l)
+                content[index] = l
+                nb_replace += 1
+
+
+        print("%d occurences in %s, %d replacements => %d remaining manual changes"%(nb_occurence,
+            fn, nb_replace, nb_occurence-nb_replace))
+
+        f = open(fn, 'w')
+        f.write("".join(content))
+        f.close()
 
 
 cyclos_constant = None
@@ -63,9 +90,18 @@ with open("/home/matthieu/api/etc/cyclos/cyclos_internal_names.yml", 'r') as cyc
     except yaml.YAMLError as exc:
         assert False, exc
 
+correpondance = None
+with open("/home/matthieu/api/etc/cyclos/cyclos_internal_correpondance.yml", 'r') as cyclos_stream:
+    try:
+        correpondance = yaml.full_load(cyclos_stream)
+    except yaml.YAMLError as exc:
+        assert False, exc
 
-check_yml_consistency()
 
-gen_code_snippet()
+#check_yml_consistency()
+#
+#gen_code_snippet()
+#
+#gen_constant_internal()
 
-gen_constant_internal()
+refactor_api()
