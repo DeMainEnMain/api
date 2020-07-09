@@ -33,12 +33,13 @@ def accounts_summaries(request, login_bdc=None):
     # Caisse eusko: caisse_eusko_bdc
     # Retour eusko: retours_d_eusko_bdc
     res = {}
-    filter_keys = ['stock_de_billets_bdc', 'caisse_euro_bdc', 'caisse_eusko_bdc', 'retours_d_eusko_bdc']
+    filter_keys = ['lcy_stock_cash_register', 'euro_cash_register',
+            'lcy_cash_register', 'lcy_back_cash_register']
 
     for filter_key in filter_keys:
         data = [item
                 for item in accounts_summaries_data['result']
-                if item['type']['id'] == str(settings.CYCLOS_CONSTANTS['account_types'][filter_key])][0]
+                if item['type']['id'] == cyclos.id[filter_key]][0]
 
         res[filter_key] = {}
         res[filter_key]['id'] = data['id']
@@ -66,11 +67,11 @@ def system_accounts_summaries(request):
     # Stock de billets: stock_de_billets
     # Compte de transit: compte_de_transit
     res = {}
-    filter_keys = ['stock_de_billets', 'compte_de_transit']
+    filter_keys = ['vault', 'transit_account']
     for filter_key in filter_keys:
         data = [item
                 for item in accounts_summaries_data['result']
-                if item['type']['id'] == str(settings.CYCLOS_CONSTANTS['account_types'][filter_key])][0]
+                if item['type']['id'] == cyclos.id[filter_key]][0]
 
         res[filter_key] = {}
         res[filter_key]['id'] = data['id']
@@ -101,11 +102,11 @@ def dedicated_accounts_summaries(request):
     query_data.extend(cyclos.post(method='account/getAccountsSummary', data=query_data_numerique)['result'])
 
     res = {}
-    filter_keys = ['compte_dedie_eusko_billet', 'compte_dedie_eusko_numerique']
+    filter_keys = ['banknote_lcy_dedicated_account', 'num_lcy_dedicated_account']
     for filter_key in filter_keys:
         data = [item
                 for item in query_data
-                if item['owner']['id'] == str(settings.CYCLOS_CONSTANTS['users'][filter_key])][0]
+                if item['owner']['id'] == cyclos.id[filter_key]][0]
 
         res[filter_key] = {}
         res[filter_key]['id'] = data['id']
@@ -414,8 +415,8 @@ def accounts_history(request):
     # If you are Gestion Interne
     elif cyclos_mode == 'gi':
         query_data = ['SYSTEM', None]
-        account_types = ['stock_de_billets', 'compte_de_transit',
-                         'compte_dedie_eusko_billet', 'compte_dedie_eusko_numerique']
+        account_types = ['vault', 'transit_account',
+                         'banknote_lcy_dedicated_account', 'num_lcy_dedicated_account']
 
     # Available account types verification
     if request.query_params['account_type'] not in account_types:
@@ -423,19 +424,18 @@ def accounts_history(request):
                          .format(request.query_params['account_type'])},
                         status=status.HTTP_400_BAD_REQUEST)
 
-    if 'compte_dedie' in request.query_params['account_type']:
-        query_data = [str(settings.CYCLOS_CONSTANTS['users'][request.query_params['account_type']]), None]
+    if 'dedicated_account' in request.query_params['account_type']:
+        query_data = [cyclos.id['dedicated_account'], None]
 
     accounts_summaries_data = cyclos.post(method='account/getAccountsSummary', data=query_data)
 
     try:
-        if 'compte_dedie' in request.query_params['account_type']:
+        if 'dedicated_account' in request.query_params['account_type']:
             data = accounts_summaries_data['result'][0]
         else:
             data = [item
                     for item in accounts_summaries_data['result']
-                    if item['type']['id'] ==
-                    str(settings.CYCLOS_CONSTANTS['account_types'][request.query_params['account_type']])][0]
+                    if item['type']['id'] == cyclos.id[request.query_params['account_type']]][0]
     except IndexError:
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -450,7 +450,7 @@ def accounts_history(request):
     try:
         if request.query_params['filter']:
             search_history_data['statuses'] = [
-                str(settings.CYCLOS_CONSTANTS['transfer_statuses'][request.query_params['filter']])
+                cyclos.id[request.query_params['filter']]
             ]
         if request.query_params['direction']:
             search_history_data['direction'] = request.query_params['direction']
