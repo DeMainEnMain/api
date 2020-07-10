@@ -410,7 +410,7 @@ def accounts_history(request):
     # If you are a BDC user
     if cyclos_mode in ['bdc', 'gi_bdc']:
         query_data = [cyclos.user_bdc_id, None]  # ID de l'utilisateur Bureau de change
-        account_types = ['stock_de_billets_bdc', 'caisse_euro_bdc', 'caisse_eusko_bdc', 'retours_d_eusko_bdc']
+        account_types = ['lcy_stock_cash_register', 'euro_cash_register', 'lcy_cash_register', 'lcy_back_cash_register']
 
     # If you are Gestion Interne
     elif cyclos_mode == 'gi':
@@ -427,6 +427,8 @@ def accounts_history(request):
     if 'dedicated_account' in request.query_params['account_type']:
         query_data = [cyclos.id['dedicated_account'], None]
 
+    log.debug("##### request account type: ####")
+    log.debug(str(request.query_params['account_type']))
     accounts_summaries_data = cyclos.post(method='account/getAccountsSummary', data=query_data)
 
     try:
