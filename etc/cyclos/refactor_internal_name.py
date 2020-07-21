@@ -1,5 +1,6 @@
 
 import yaml  # PyYAML
+import glob
 
 from slugify import slugify
 import re
@@ -83,6 +84,26 @@ def refactor_api():
         f.write("".join(content))
         f.close()
 
+def refactor_bdc():
+    #file_to_refactor = glob.glob('../../../bdc/src/bdc/static/js/*.jsx')
+    file_to_refactor = glob.glob('*.jsx')
+    cyclos_old_names = []
+    to_skip = ['bdc', 'euro', 'eusko', 'pin']
+    for k in cyclos_constant:
+        for l in cyclos_constant[k]:
+            if l not in to_skip:
+                cyclos_old_names.append(l)
+
+    for fn in file_to_refactor:
+        f = open(fn, 'r')
+        content = f.read()
+        f.close()
+        for k in cyclos_old_names:
+            p = re.compile(k)
+            result = p.findall(content)
+            if result != []:
+               print(fn, k, str(result))
+
 
 cyclos_constant = None
 with open("/home/matthieu/api/etc/cyclos/cyclos_constants.yml", 'r') as cyclos_stream:
@@ -110,6 +131,7 @@ with open("/home/matthieu/api/etc/cyclos/cyclos_internal_correpondance.yml", 'r'
 #
 #gen_code_snippet()
 #
-gen_constant_internal()
-
-refactor_api()
+#gen_constant_internal()
+#
+#refactor_api()
+refactor_bdc()
